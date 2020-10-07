@@ -1,50 +1,38 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "core/Window.h"
 
 #include <iostream>
 
+//cmake --build .
+
+void onSizeChange(GLFWwindow* pWindow, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void onKey(GLFWwindow* pWindow, int key, int scancode, int action, int mode)
+{
+
+}
+
 int main(void)
 {
-    GLFWwindow* window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+    try
     {
-        glfwTerminate();
-        return -1;
+        Window root("Test", 800, 600);
+
+        root.setSizeCallback(onSizeChange);
+        root.setKeyCallback(onKey);
+
+        std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+        std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+
+        root.loop();
     }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    if (!gladLoadGL())
+    catch (const std::runtime_error& ex)
     {
-        std::cout << "Can`t load GLAD!" << std::endl;
+        std::cout << ex.what() << std::endl;
         return -1;
     }
 
-    std::cout << "OpenGL" << GLVersion.major << "." << GLVersion.minor << std::endl;
-
-    glClearColor(0, 1, 0, 1);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
     return 0;
 }
